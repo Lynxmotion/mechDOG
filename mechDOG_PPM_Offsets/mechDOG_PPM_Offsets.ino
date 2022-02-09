@@ -17,7 +17,7 @@ short throttle;
 short rudder;
 short pitch;
 short roll;
-short switch_ch5;
+short switch_ch5 = 0;
 short button;
 
 // RR = right rear; RF = right front; LR = left rear; LF = left front
@@ -109,10 +109,10 @@ void setup()
   Serial.write("#254FPC5");    // default = 5
   
   // Angular Stiffness
-  Serial.write("#254CAS-6\r"); // default = 0 [??????????????????????????????????????]
+  Serial.write("#254CAS-6\r"); // default = 0 & works with -6
 
   // Angular Holding Stiffness
-  Serial.write("#254CAH4\r");  // default = 4
+  Serial.write("#254CAH4\r");  // default = 4 & works with 4
 
   // LED Color
   Serial.write("#254CLED3\r"); // 3 = blue
@@ -126,10 +126,13 @@ void setup()
 }
 
 void loop()
-{  
+{    
   if (wakeUpDone == false)
   {
-   wakeUp();
+    PPMupdate();
+    if (switch_ch5 == 1){ 
+      wakeUp();
+    }
   } 
 
   else if (wakeUpDone == true)
@@ -144,11 +147,11 @@ void loop()
       case 1:
         trot_F(); // trot forward
       break;
-
+/*    
       case 2:
-        trot_B(); // trot backward
+        trot_B(); // trot backward is not yet implemented
       break;
-      
+*/      
       case 3:
         trot_R(); // side trot to the right
       break;
@@ -194,18 +197,18 @@ void loop()
 
 void queryPos() // query positions and set them as current positions
 {
-  currPos11 = myLSS11.getPosition(); delay(queryDelay);
-  currPos12 = myLSS12.getPosition(); delay(queryDelay);
-  currPos13 = myLSS13.getPosition(); delay(queryDelay);
-  currPos21 = myLSS21.getPosition(); delay(queryDelay);
-  currPos22 = myLSS22.getPosition(); delay(queryDelay);
-  currPos23 = myLSS23.getPosition(); delay(queryDelay);
-  currPos31 = myLSS31.getPosition(); delay(queryDelay);
-  currPos32 = myLSS32.getPosition(); delay(queryDelay);
-  currPos33 = myLSS33.getPosition(); delay(queryDelay);
-  currPos41 = myLSS41.getPosition(); delay(queryDelay);
-  currPos42 = myLSS42.getPosition(); delay(queryDelay);
-  currPos43 = myLSS43.getPosition(); delay(queryDelay);
+  currPos11 = myLSS11.getPosition() + offset11; delay(queryDelay);
+  currPos12 = myLSS12.getPosition() + offset12; delay(queryDelay);
+  currPos13 = myLSS13.getPosition() + offset13; delay(queryDelay);
+  currPos21 = myLSS21.getPosition() + offset21; delay(queryDelay);
+  currPos22 = myLSS22.getPosition() + offset22; delay(queryDelay);
+  currPos23 = myLSS23.getPosition() + offset23; delay(queryDelay);
+  currPos31 = myLSS31.getPosition() + offset31; delay(queryDelay);
+  currPos32 = myLSS32.getPosition() + offset32; delay(queryDelay);
+  currPos33 = myLSS33.getPosition() + offset33; delay(queryDelay);
+  currPos41 = myLSS41.getPosition() + offset41; delay(queryDelay);
+  currPos42 = myLSS42.getPosition() + offset42; delay(queryDelay);
+  currPos43 = myLSS43.getPosition() + offset43; delay(queryDelay);
 }
 
 void wakeUp()
@@ -287,7 +290,7 @@ void stateMachine()
         }
     }
 
-  else if (rudder >= 1600) // trot_R()
+  else if (roll >= 1600) // trot_R()
     {
       if (prevState == 3)
         {
@@ -301,7 +304,7 @@ void stateMachine()
         }
     }
 
-  else if (rudder <= 1400) // trot_L()
+  else if (roll <= 1400) // trot_L()
     {
       if (prevState == 4)
         {
@@ -329,7 +332,7 @@ void stateMachine()
         }
     }
 
-  else if (roll >= 1600) // turn_R()
+  else if (rudder >= 1600) // turn_R()
     {
       if (prevState == 6)
         {
@@ -343,7 +346,7 @@ void stateMachine()
         }
     }
 
-  else if (roll <= 1400) // turn_L()
+  else if (rudder <= 1400) // turn_L()
     {
       if (prevState == 7)
         {
@@ -385,7 +388,7 @@ void stateMachine()
         }
     }
 
-  else if (switch_ch5 == 1) // rest()
+  else if (switch_ch5 == 0) // rest()
     {
       if (prevState == 12)
         {
@@ -1227,15 +1230,22 @@ void PPMupdate()
   pitch       =   ppm.read_channel(PITCH);
   rudder      =   ppm.read_channel(RUDDER);
   switch_ch5  =   ppm.read_channel(SWITCH_CH5);
-    if ((switch_ch5 >=1400) && (switch_ch5<= 1600)){
-      switch_ch5 = 2;
-    }
-    else if (switch_ch5 >= 1650) {
-      switch_ch5 = 3;
-    }
-    else if (switch_ch5 <= 1350) {
+    if ((switch_ch5 >= 1400) && (switch_ch5 <= 1600)){
       switch_ch5 = 1;
     }
+    else{
+      switch_ch5 = 0;
+    }
+
+//    if ((switch_ch5 >=1400) && (switch_ch5<= 1600)){
+//      switch_ch5 = 2;
+//    }
+//    else if (switch_ch5 >= 1650) {
+//      switch_ch5 = 1;
+//    }
+//    else if (switch_ch5 <= 1350) {
+//      switch_ch5 = 2;
+//    }
   
   button      =   ppm.read_channel(BUTTON);
     if (button <= 1600){
