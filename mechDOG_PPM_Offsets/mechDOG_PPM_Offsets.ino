@@ -1236,16 +1236,6 @@ void PPMupdate()
     else{
       switch_ch5 = 0;
     }
-
-//    if ((switch_ch5 >=1400) && (switch_ch5<= 1600)){
-//      switch_ch5 = 2;
-//    }
-//    else if (switch_ch5 >= 1650) {
-//      switch_ch5 = 1;
-//    }
-//    else if (switch_ch5 <= 1350) {
-//      switch_ch5 = 2;
-//    }
   
   button      =   ppm.read_channel(BUTTON);
     if (button <= 1600){
