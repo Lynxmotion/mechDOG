@@ -148,14 +148,11 @@ void loop()
       
       case 1:
         if (switch_ch7 == 0){
-          trot_F(); // trot forward
-          //Serial.println("switch_ch7 = 0");
+          trot_F(); // Original trot forward
         }
         else if (switch_ch7 == 1){
-          trot_F_SLOW(); // trot forward
-          //Serial.println("switch_ch7 = 2");
+          trot_F_SLOW(); // New slower trot forward
         }
-        
       break;
    
       case 2:
