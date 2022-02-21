@@ -12,6 +12,7 @@ Description: code of walking gait (trot), turnings, side trotting and demo poses
 #define ROLL        1
 #define SWITCH_CH5  5
 #define BUTTON      6
+#define SWITCH_CH7  7
 
 short throttle;
 short rudder;
@@ -19,6 +20,7 @@ short pitch;
 short roll;
 short switch_ch5 = 0;
 short button;
+short switch_ch7 = 0;
 
 // RR = right rear; RF = right front; LR = left rear; LF = left front
 LSS myLSS11 = LSS(11); // RR hip roll
@@ -145,13 +147,21 @@ void loop()
       break;
       
       case 1:
-        trot_F(); // trot forward
+        if (switch_ch7 == 0){
+          trot_F(); // trot forward
+          //Serial.println("switch_ch7 = 0");
+        }
+        else if (switch_ch7 == 1){
+          trot_F_SLOW(); // trot forward
+          //Serial.println("switch_ch7 = 2");
+        }
+        
       break;
-/*    
+   
       case 2:
         trot_B(); // trot backward is not yet implemented
       break;
-*/      
+      
       case 3:
         trot_R(); // side trot to the right
       break;
@@ -502,38 +512,41 @@ void trot_F()
   updatePos();
 }
 
-void trot_B()
+// Trot 10
+void trot_F_SLOW()
 {
   moving = true;
-  ird = 35;
+  ird = 8; // define in how many increments each "phase" will be divided (the higher the "ird", the slower the movement)
 
   if (phase == 1)
   {
-    // RR leg FRONT     // RF leg UP        // LR leg BACK      // LF leg DOWN
-    targPos11 = -125;   targPos21 = -125;   targPos31 = -125;   targPos41 = -125;
-    targPos12 =   -5;   targPos22 = -505;   targPos32 = -395;   targPos42 = -295;
-    targPos13 =  180;   targPos23 =  495;   targPos33 = -105;   targPos43 =  180;
+    // target positions for phase 1
+    // RR leg UP        // RF leg DOWN      // LR leg DOWN           // LF leg UP
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 = -380;   targPos22 = -220;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  545;   targPos23 =  240;   targPos33 = targPos23;   targPos43 = targPos13;
 
     if (i < ird)
     {
-      increment();
+      increment();       // run increment function until target positions get reached
       i++;
     }
     else
     {
-      delay(phaseDelay);
-      setPrevPos();
-      phase = 2;
-      i = 0;
+      delay(phaseDelay); // wait a little for it to get there
+      setPrevPos();      // store current positions ("currPos") as previous positions ("prevPos") for the next function
+      phase = 2;         // and proceed to phase 2
+      i = 0;             // reset "i" for the next phase
     }
   }
 
   else if (phase == 2)
   {
-    // RR leg UP        // RF leg BACK      // LR leg DOWN      // LF leg FRONT
-    targPos11 = -125;   targPos21 = -125;   targPos31 = -125;   targPos41 = -125;
-    targPos12 = -505;   targPos22 = -395;   targPos32 = -295;   targPos42 =   -5;
-    targPos13 =  495;   targPos23 = -105;   targPos33 =  180;   targPos43 =  180;
+    // target positions for phase 2
+    // RR leg FRONT     // RF leg BACK      // LR leg BACK           // LF leg FRONT
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 =  -15;   targPos22 = -365;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  205;   targPos23 =  145;   targPos33 = targPos23;   targPos43 = targPos13;
 
     if (i < ird)
     {
@@ -551,10 +564,10 @@ void trot_B()
 
   else if (phase == 3)
   {
-    // RR leg BACK      // RF leg DOWN      // LR leg FRONT     // LF leg UP
-    targPos11 = -125;   targPos21 = -125;   targPos31 = -125;   targPos41 = -125;
-    targPos12 = -395;   targPos22 = -295;   targPos32 =   -5;   targPos42 = -505;
-    targPos13 = -105;   targPos23 =  180;   targPos33 =  180;   targPos43 =  495;
+    // RR leg DOWN      // RF leg UP        // LR leg UP             // LF leg DOWN
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 = -220;   targPos22 = -380;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  240;   targPos23 =  545;   targPos33 = targPos23;   targPos43 = targPos13;
 
     if (i < ird)
     {
@@ -572,10 +585,63 @@ void trot_B()
 
   else if (phase == 4)
   {
-    // RR leg DOWN      // RF leg FRONT     // LR leg UP        // LF leg BACK
-    targPos11 = -125;   targPos21 = -125;   targPos31 = -125;   targPos41 = -125;
-    targPos12 = -295;   targPos22 =   -5;   targPos32 = -505;   targPos42 = -395;
-    targPos13 =  180;   targPos23 =  180;   targPos33 =  495;   targPos43 = -105;
+    // RR leg BACK      // RF leg FRONT     // LR leg FRONT          // LF leg BACK
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 = -365;   targPos22 =  -15;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  145;   targPos23 =  205;   targPos33 = targPos23;   targPos43 = targPos13;
+
+    if (i < ird)
+    {
+      increment();
+      i++;
+    }
+    else
+    {
+      delay(phaseDelay);
+      setPrevPos(); // if last phase reach its target positions ("targPos")...
+      phase = 1;    // ... return to phase 1
+      i = 0;
+    }
+  }
+
+  updatePos();
+}
+
+// Trot Backward NEW
+void trot_B()
+{
+  moving = true;
+  ird = 10; // define in how many increments each "phase" will be divided (the higher the "ird", the slower the movement)
+
+  if (phase == 1)
+  {
+    // target positions for phase 1
+    // RR leg UP        // RF leg DOWN      // LR leg DOWN           // LF leg UP
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 = -415;   targPos22 = -245;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  540;   targPos23 =  230;   targPos33 = targPos23;   targPos43 = targPos13;
+
+    if (i < ird)
+    {
+      increment();       // run increment function until target positions get reached
+      i++;
+    }
+    else
+    {
+      delay(phaseDelay); // wait a little for it to get there
+      setPrevPos();      // store current positions ("currPos") as previous positions ("prevPos") for the next function
+      phase = 2;         // and proceed to phase 2
+      i = 0;             // reset "i" for the next phase
+    }
+  }
+
+  else if (phase == 2)
+  {
+    // target positions for phase 2
+    // RR leg B         // RF leg F         // LR leg F              // LF leg B
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 = -375;   targPos22 =  -45;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  130;   targPos23 =  215;   targPos33 = targPos23;   targPos43 = targPos13;
 
     if (i < ird)
     {
@@ -586,7 +652,49 @@ void trot_B()
     {
       delay(phaseDelay);
       setPrevPos();
-      phase = 1;
+      phase = 3;
+      i = 0;
+    }
+  }
+
+  else if (phase == 3)
+  {
+    // RR leg DOWN      // RF leg UP        // LR leg UP             // LF leg DOWN
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 = -245;   targPos22 = -415;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  230;   targPos23 =  540;   targPos33 = targPos23;   targPos43 = targPos13;
+
+    if (i < ird)
+    {
+      increment();
+      i++;
+    }
+    else
+    {
+      delay(phaseDelay);
+      setPrevPos();
+      phase = 4;
+      i = 0;
+    }
+  }
+
+  else if (phase == 4)
+  {
+    // RR leg F         // RF leg B         // LR leg B              // LF leg F
+    targPos11 = -125;   targPos21 = -125;   targPos31 = targPos21;   targPos41 = targPos11;
+    targPos12 =  -45;   targPos22 = -375;   targPos32 = targPos22;   targPos42 = targPos12;
+    targPos13 =  215;   targPos23 =  130;   targPos33 = targPos23;   targPos43 = targPos13;
+
+    if (i < ird)
+    {
+      increment();
+      i++;
+    }
+    else
+    {
+      delay(phaseDelay);
+      setPrevPos(); // if last phase reach its target positions ("targPos")...
+      phase = 1;    // ... return to phase 1
       i = 0;
     }
   }
@@ -1236,12 +1344,18 @@ void PPMupdate()
     else{
       switch_ch5 = 0;
     }
-  
   button      =   ppm.read_channel(BUTTON);
     if (button <= 1600){
       button = 1;
     }
     else {
       button = 0;
+    }
+  switch_ch7  =   ppm.read_channel(SWITCH_CH7);
+    if (switch_ch7 <= 1400){
+      switch_ch7 = 0;
+    }
+    else if (switch_ch7 >= 1600){
+      switch_ch7 = 1;
     }
 }
