@@ -1,5 +1,6 @@
 /*
 Author: Edu Dickel (https://www.youtube.com/mechdickel)
+maintainers:  Eric Nantel
 Description: code of walking gait (trot), turnings, side trotting and demo poses for mechDOG (quadruped robot/robot dog).
 */
 #include <LSS.h>
@@ -13,6 +14,7 @@ Description: code of walking gait (trot), turnings, side trotting and demo poses
 #define SWITCH_CH5  5
 #define BUTTON      6
 #define SWITCH_CH7  7
+#define POT         8
 
 short throttle;
 short rudder;
@@ -21,6 +23,7 @@ short roll;
 short switch_ch5 = 0;
 short button;
 short switch_ch7 = 0;
+short pot;
 
 // RR = right rear; RF = right front; LR = left rear; LF = left front
 LSS myLSS11 = LSS(11); // RR hip roll
@@ -132,7 +135,7 @@ void loop()
   if (wakeUpDone == false)
   {
     PPMupdate();
-    if (switch_ch5 == 1){ 
+    if (switch_ch7 > 2){ 
       wakeUp();
     }
   } 
@@ -147,12 +150,7 @@ void loop()
       break;
       
       case 1:
-        if (switch_ch7 == 0){
-          trot_F(); // Original trot forward
-        }
-        else if (switch_ch7 == 1){
-          trot_F_SLOW(); // New slower trot forward
-        }
+        trot_F(); // Original trot forward
       break;
    
       case 2:
@@ -160,11 +158,21 @@ void loop()
       break;
       
       case 3:
-        trot_R(); // side trot to the right
+        if (switch_ch5 == 1)  {
+          trot_R(); // side trot to the right
+        }
+        else if (switch_ch5 == 3) {
+          roll_R(); // roll to the right (not real kinematics, just demo pose)
+        }
       break;
 
       case 4:
-        trot_L(); // side trot to the left
+        if (switch_ch5 == 1)  {
+          trot_L(); // side trot to the right
+        }
+        else if (switch_ch5 == 3) {
+          roll_L(); // roll to the left (not real kinematics, just demo pose)
+        }
       break;
 
       case 5:
@@ -180,22 +188,18 @@ void loop()
       break;
 
       case 8:
-        look_U(); // look up
+        if (switch_ch5 == 3)  {
+          look_U(); // look up
+        }
       break;
 
       case 9:
-        look_D(); // look down
-      break;
-/*
-      case 10:
-        roll_R(); // roll to the right (not real kinematics, just demo pose)
+        if (switch_ch5 == 3)  {
+          look_D(); // look down
+        }
       break;
 
-      case 11:
-        roll_L(); // roll to the left (not real kinematics, just demo pose)
-      break;
- */
-      case 12:
+      case 10:
         rest();   // lie down
       break;
     }
@@ -395,17 +399,17 @@ void stateMachine()
         }
     }
 
-  else if (switch_ch5 == 0) // rest()
+  else if (switch_ch7 < 2) // rest()
     {
-      if (prevState == 12)
+      if (prevState == 10)
         {
-          state = 12; 
+          state = 10; 
         }
 
-      else if (prevState != 12)
+      else if (prevState != 10)
         {
           Stop();
-          state = prevState = 12; 
+          state = prevState = 10; 
         }
     }
 
@@ -1161,7 +1165,7 @@ void trot_P()
 void look_U()
 {
   moving = true;
-  ird = 50;
+  ird = 100;
 
   targPos11 = -125;   targPos21 =  -85;   targPos31 = targPos11;   targPos41 = targPos21;
   targPos12 = -440;   targPos22 =  -90;   targPos32 = targPos12;   targPos42 = targPos22;
@@ -1179,7 +1183,7 @@ void look_U()
 void look_D()
 {
   moving = true;
-  ird = 50;
+  ird = 100;
 
   targPos11 =  -85;   targPos21 = -125;   targPos31 = targPos11;   targPos41 = targPos21;
   targPos12 =  200;   targPos22 = -180;   targPos32 = targPos12;   targPos42 = targPos22;
@@ -1301,7 +1305,7 @@ void updatePos() // move to new calculated positions
 
 void Stop() // runs between one function and other to make sure we start from "common" positions (i.e., initial positions)
 { 
-  ird = 25;
+  ird = 50;
   
   if (moving == true)
     {
@@ -1335,11 +1339,15 @@ void PPMupdate()
   pitch       =   ppm.read_channel(PITCH);
   rudder      =   ppm.read_channel(RUDDER);
   switch_ch5  =   ppm.read_channel(SWITCH_CH5);
-    if ((switch_ch5 >= 1400) && (switch_ch5 <= 1600)){
+  switch_ch7  =   ppm.read_channel(SWITCH_CH7);
+    if (switch_ch5 < 1300){
       switch_ch5 = 1;
     }
-    else{
-      switch_ch5 = 0;
+    else if ((switch_ch5 >= 1300) && (switch_ch5 <= 1700)){
+      switch_ch5 = 2;
+    }
+    else if (switch_ch5 > 1700){
+      switch_ch5 = 3;
     }
   button      =   ppm.read_channel(BUTTON);
     if (button <= 1600){
@@ -1349,10 +1357,16 @@ void PPMupdate()
       button = 0;
     }
   switch_ch7  =   ppm.read_channel(SWITCH_CH7);
-    if (switch_ch7 <= 1400){
-      switch_ch7 = 0;
-    }
-    else if (switch_ch7 >= 1600){
+    if (switch_ch7 < 1300){
       switch_ch7 = 1;
     }
+    else if ((switch_ch7 >= 1300) && (switch_ch7 <= 1700)){
+      switch_ch7 = 2;
+    }
+    else if (switch_ch7 > 1700){
+      switch_ch7 = 3;
+    }
+  pot       =   ppm.read_channel(POT);
+    constrain(pot, 1000, 2000);
+    phaseDelay = map(pot, 1000, 2000, 5, 50 );
 }
