@@ -1,1 +1,2 @@
-This example is made to be used to "test" your assembly. It will just wakeup and walk so be careful.
+This example is made to be used to "test" your assembly.<br>
+It will just wakeup and start walk until the battery is disconnected. Use Caution<br>
