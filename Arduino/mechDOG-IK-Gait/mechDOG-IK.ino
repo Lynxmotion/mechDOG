@@ -53,9 +53,10 @@ Quadruped robot = Quadruped(MechDog);
 
 void setup()
 {
-   robot.initServoBus(LSS_SERIAL, LSS_BAUD);         //LSS bus w/ Hardware serial
+   delay(1500);                                 //Let the LSS's booting up
+   robot.initServoBus(LSS_SERIAL, LSS_BAUD);    //LSS bus w/ Hardware serial
    delay(200);
-   LSS(254).setColorLED(2);                          //Green
+   LSS(254).setColorLED(2);                     //Green
 
    //RC mode w/ analog pin, default pin A0, invert false
    robot.initMCUBus(RC, A3);                       
