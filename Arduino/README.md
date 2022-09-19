@@ -4,4 +4,4 @@ mechDOG-Simple-Gait:<br>
 Original gaits developed by Mech-Dickel 
 
 mechDOG-IK-Gait:<br>
-Inverse Kinematic gaits developed by Eduardo Nunes & Geraldine Barreto
+Inverse Kinematic gaits developed by Eduardo Nunes [(EduardoFNA)](https://github.com/EduardoFNA) & Geraldine Barreto (geraldinebc)
