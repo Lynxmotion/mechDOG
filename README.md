@@ -5,3 +5,5 @@ Project then evolved to a Lynxmotion base frame/platform and Dickel wrote the co
 
 Project is available on RobotShop / Lynxmotion forum
 https://www.robotshop.com/community/forum/t/lynxmotion-ses-v2-mechdog-quadrapod-robot/78217
+
+Then Eduardo Nunes ([EduardoFNA](https://github.com/EduardoFNA)) & Geraldine Barreto ([geraldinebc](https://github.com/geraldinebc)) joined the project for an Inverse Kinematics sample code.
