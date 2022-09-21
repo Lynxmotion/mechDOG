@@ -8,8 +8,8 @@
 
 #include "src/Quadruped.h"
 
-#define WIFI_TIME 25000
-#define LSS_BAUD 38400
+#define WIFI_TIME   25000
+#define LSS_BAUD    115200
 #define LSS_SERIAL  (Serial)
 char rd;
 
@@ -17,8 +17,8 @@ char rd;
 //                       Rx,Tx
 SoftwareSerial BEE_SERIAL(10,11);  //3,2 (Arduino UNO, BotBoarduino) //10,11 (2IO)
 
-const char ssid[] = {"AT+SSID=Robotech"};              //{"AT+SSID=Barreto"};              // WiFi SSID
-const char passwd[] = {"AT+PASSWORD=deg.1812"};        //{"AT+PASSWORD=15091994201723"};   // WiFi  password
+const char ssid[] = {"AT+SSID=ssid"};           // WiFi SSID
+const char passwd[] = {"AT+PASSWORD=password"}; // WiFi  password
 
 void xbeeConfig(void){
     Serial.println("Sending Config commands");
