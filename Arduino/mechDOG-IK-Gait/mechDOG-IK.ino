@@ -1,8 +1,8 @@
 /*
     Author:     Eduardo Nunes
                 Geraldine Barreto
-    Version:    1.0
-    Licence:    LGPL-3.0 (GNU Lesser General Public License)
+    Version:      1.0
+    Licence:      LGPL-3.0 (GNU Lesser General Public License)
     Description:  Basic example of control of  LSS based quadruped robot.
 */
 
@@ -18,7 +18,7 @@ char rd;
 SoftwareSerial BEE_SERIAL(10,11);  //3,2 (Arduino UNO, BotBoarduino) //10,11 (2IO)
 
 const char ssid[] = {"AT+SSID=ssid"};           // WiFi SSID
-const char passwd[] = {"AT+PASSWORD=password"}; // WiFi  password
+const char passwd[] = {"AT+PASSWORD=password"}; // WiFi password
 
 void xbeeConfig(void){
     Serial.println("Sending Config commands");
@@ -53,10 +53,10 @@ Quadruped robot = Quadruped(MechDog);
 
 void setup()
 {
-   delay(1500);                                 //Let the LSS's booting up
-   robot.initServoBus(LSS_SERIAL, LSS_BAUD);    //LSS bus w/ Hardware serial
+   delay(1500);
+   robot.initServoBus(LSS_SERIAL, LSS_BAUD);         //LSS bus w/ Hardware serial
    delay(200);
-   LSS(254).setColorLED(2);                     //Green
+   LSS(254).setColorLED(2);                          //Green
 
    //RC mode w/ analog pin, default pin A0, invert false
    robot.initMCUBus(RC, A3);                       
