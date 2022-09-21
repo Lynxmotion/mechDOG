@@ -1,6 +1,6 @@
 Initial project made by Mech-Dickel Robotics with the Lynxmotion BETA servos.<br>
-- ([mechdickel GitHub](https://github.com/mechdickel))<br>
-- ([Mech-Dickel Robotic YouTube](https://www.youtube.com/mechdickel))<br>
+- [mechdickel GitHub](https://github.com/mechdickel)<br>
+- [Mech-Dickel Robotic YouTube](https://www.youtube.com/mechdickel)<br>
 - [mechDOG (robot dog based on Arduino and LSS)](https://www.robotshop.com/community/forum/t/mechdog-robot-dog-based-on-arduino-and-lss/65705)
 
 
