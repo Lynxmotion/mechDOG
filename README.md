@@ -1,5 +1,5 @@
 Lynxmotion Wiki: [mechDOG Quadruped](https://wiki.lynxmotion.com/info/wiki/lynxmotion/view/servo-erector-set-robots-kits/ses-v2-robots/ses-v2-legged/ses-v2-mechdog/)<br>
-RobotShop Purchase: [Lynxmotion (LSS) - mechDOG Quadruped RC Kit w/ LSS-2IO](https://www.robotshop.com/en/lynxmotion-lss-mechdog-quadruped-rc-kit-w-lss-2io.html)
+RobotShop Purchase: [Lynxmotion (LSS) - mechDOG Quadruped RC Kit w/ LSS-2IO](https://www.robotshop.com/en/lynxmotion-lss-mechdog-quadruped-rc-kit-w-lss-2io.html)<br>
 RobotShop Community: [Lynxmotion SES V2 mechDOG Quadrapod Robot](https://www.robotshop.com/community/forum/t/lynxmotion-ses-v2-mechdog-quadrapod-robot/78217)
 
 Initial project made by Mech-Dickel Robotics with the Lynxmotion BETA servos.<br>
