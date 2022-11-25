@@ -6,9 +6,9 @@
 #define C_RC 1 //(PPM)
 #define C_WIFI 2 //(Xbee)
 
-#define WSSID "Robotech"
-#define WPASS "deg.1812"
+#define WSSID "default"
+#define WPASS "password"
 
-#define QUADRUPED_CONTROL C_WIFI 
+#define QUADRUPED_CONTROL C_RC
 
 #endif
