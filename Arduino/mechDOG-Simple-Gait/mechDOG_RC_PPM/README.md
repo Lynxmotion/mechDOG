@@ -3,4 +3,4 @@ Lynxmotion mechDOG RC PPM example. (Radio Controlled with PPM stream as the cont
 Wiring:<br>
 - PPM Stream: A3
   
-  ![Alt Text](https://wiki.lynxmotion.com/info/wiki/lynxmotion/download/servo-erector-set-robots-kits/ses-v2-robots/ses-v2-legged/ses-v2-mechdog/mechdog-quickstart/mechdog-setup/WebHome/SESV2-mechDOG-Setup-RC-Control-REV3.png)
+  ![Alt Text](https://github.com/Lynxmotion/mechDOG/blob/master/Arduino/mechDOG-Simple-Gait/mechDOG_RC_PPM/SESV2-mechDOG-Setup-RC-Control-REV3.png)
